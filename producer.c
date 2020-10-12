@@ -6,6 +6,7 @@
  * producer.c
  *
  */
+#include <signal.h>
 #include <fcntl.h>
 #include <sys/shm.h>
 #include <sys/stat.h>
@@ -20,6 +21,12 @@
 const int MMPAP_SIZE = 4096;
 
 unsigned int ip_checksum(char *data, int length);
+void sig_handler(int sig)
+{
+	printf("%s:: Got the Signal %d \n", __FUNCTION__, sig);
+	printf("Dumping memory . . . \nExiting program . . .\nGoodbye \n");
+	exit(0);
+}
 typedef struct items{
    int    item_no;		/* number of the item produced */
    unsigned short cksum;        /* 16-bit Internet checksum    */
@@ -27,6 +34,13 @@ typedef struct items{
  } item;
 
 int main(int argc, char *argv[]) {
+
+  struct sigaction act;
+  act.sa_handler = sig_handler;
+  act.sa_flags = 0;
+
+  sigaction(SIGINT, &act, 0);
+  
 
   const char *name = argv[1];
   int i, shm_fd;

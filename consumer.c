@@ -6,15 +6,15 @@
  *
  */
 
-
-
+#include <stdio.h>
+#include <signal.h>
 #include <unistd.h>
 #define NMAP_SIZE   4096
 #define BUFFER_SIZE 100
 #define PAYLOAD_SIZE 34
 
 void sig_handler(int sig) {
-	printf("%s:: Got the Signal %d \n", _FUNCTION_, sig);
+	printf("%s:: Got the Signal %d \n", __FUNCTION__, sig);
 }
 
 
@@ -28,10 +28,9 @@ int main(int argc, char *argv[]) {
   struct sigaction act;
 
   act.sa_handler = sig_handler;
-  sigempty(&act.sa_mask);
+  sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
   sigaction (SIGINT, &act, 0);
-  
 
   item   buffer[BUFFER_SIZE];
   int    in  = 0;
